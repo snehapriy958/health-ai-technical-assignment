@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WHO Health Assistant — Question C (Level 1 RAG)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --bg-page: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --badge-bg: #e0f2fe;
+      --badge-text: #0369a1;
+      --danger-bg: #fef2f2;
+      --danger-text: #991b1b;
+      --success-border: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .badge-who {
+      display: inline-block;
+      background-color: var(--badge-bg);
+      color: var(--badge-text);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.975rem;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 0.75rem 1rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.15);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .sample-section {
+      margin-top: 1rem;
+    }
+
+    .sample-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .sample-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chip {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.825rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    button.btn-ask {
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    button.btn-ask:hover:not(:disabled) {
+      background-color: var(--primary-dark);
+    }
+
+    button.btn-ask:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .alert {
+      display: none;
+      background: var(--danger-bg);
+      border: 1px solid #fecaca;
+      color: var(--danger-text);
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .result-container {
+      display: none;
+    }
+
+    .answer-box {
+      background: #ffffff;
+      border-left: 4px solid var(--primary);
+      padding: 1.25rem 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .answer-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .answer-text {
+      font-size: 1rem;
+      color: #1e293b;
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+
+    .sources-header {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .source-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .source-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .source-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .source-title {
+      font-weight: 600;
+      font-size: 0.925rem;
+      color: #0f172a;
+    }
+
+    .source-details {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .source-link {
+      display: inline-block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .source-link:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge-who">WHO Grounded RAG • Level 1</span>
+      <h1>Public Health Question Assistant</h1>
+      <p class="subtitle">Answers are retrieved directly from official World Health Organization fact sheets covering Diabetes, Hypertension, Physical Activity, Healthy Diet, and Obesity.</p>
+    </header>
+
+    <div class="card">
+      <div class="input-group">
+        <label for="questionInput">Ask a public health question:</label>
+        <textarea id="questionInput" placeholder="e.g., What are the main ways to prevent type 2 diabetes?"></textarea>
+      </div>
+
+      <div class="controls" style="margin-top: 1rem;">
+        <button id="askBtn" class="btn-ask" onclick="submitQuestion()">
+          <span>Ask Assistant</span>
+        </button>
+      </div>
+
+      <div class="sample-section">
+        <div class="sample-title">Or try a sample question:</div>
+        <div class="sample-chips">
+          <span class="chip" onclick="setQuestion('What are some ways to reduce the risk of diabetes?')">Ways to reduce diabetes risk</span>
+          <span class="chip" onclick="setQuestion('What blood pressure reading is considered hypertension?')">Hypertension threshold</span>
+          <span class="chip" onclick="setQuestion('How much physical activity is recommended for adults each week?')">Adult physical activity guidelines</span>
+          <span class="chip" onclick="setQuestion('What are the core principles of a healthy diet?')">Core principles of healthy diet</span>
+          <span class="chip" onclick="setQuestion('How is obesity defined for adults?')">Adult obesity definition</span>
+          <span class="chip" onclick="setQuestion('What is the capital of France?')">Out-of-domain test</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="errorAlert" class="alert"></div>
+
+    <div id="resultContainer" class="result-container card">
+      <div class="answer-box">
+        <div class="answer-title">Authoritative WHO Answer</div>
+        <div id="answerText" class="answer-text"></div>
+      </div>
+
+      <div id="sourcesBlock">
+        <div class="sources-header">
+          <span>📚 Verified Sources Used:</span>
+        </div>
+        <div id="sourceList" class="source-list"></div>
+      </div>
+    </div>
+
+    <footer>
+      Public Health Question-Answering Assistant • Level 1 Baseline • Sources: World Health Organization Fact Sheets
+    </footer>
+  </div>
+
+  <script>
+    function setQuestion(text) {
+      document.getElementById('questionInput').value = text;
+      submitQuestion();
+    }
+
+    async function submitQuestion() {
+      const qInput = document.getElementById('questionInput');
+      const askBtn = document.getElementById('askBtn');
+      const errorAlert = document.getElementById('errorAlert');
+      const resultContainer = document.getElementById('resultContainer');
+      const answerText = document.getElementById('answerText');
+      const sourceList = document.getElementById('sourceList');
+      const sourcesBlock = document.getElementById('sourcesBlock');
+
+      const question = qInput.value.trim();
+
+      // Clear alerts
+      errorAlert.style.display = 'none';
+      errorAlert.textContent = '';
+
+      if (!question) {
+        errorAlert.textContent = 'Please enter a question.';
+        errorAlert.style.display = 'block';
+        return;
+      }
+
+      // UI loading state
+      askBtn.disabled = true;
+      askBtn.innerHTML = '<span class="spinner"></span><span>Searching WHO Sources...</span>';
+
+      try {
+        const response = await fetch('/ask', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ question: question })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || 'An unexpected error occurred.');
+        }
+
+        answerText.textContent = data.answer;
+
+        sourceList.innerHTML = '';
+        if (data.sources && data.sources.length > 0) {
+          sourcesBlock.style.display = 'block';
+          data.sources.forEach(src => {
+            const card = document.createElement('div');
+            card.className = 'source-card';
+            card.innerHTML = `
+              <div class="source-meta">
+                <span class="source-title">${src.title} — <em>${src.section}</em></span>
+                <span class="source-details">Source ID: <code>${src.source_id}</code> • ${src.organization} • Relevance: ${(src.relevance_score * 100).toFixed(1)}%</span>
+              </div>
+              <a href="${src.url}" target="_blank" rel="noopener noreferrer" class="source-link">View WHO Document ↗</a>
+            `;
+            sourceList.appendChild(card);
+          });
+        } else {
+          sourcesBlock.style.display = 'none';
+        }
+
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      } catch (err) {
+        errorAlert.textContent = err.message;
+        errorAlert.style.display = 'block';
+        resultContainer.style.display = 'none';
+      } finally {
+        askBtn.disabled = false;
+        askBtn.innerHTML = '<span>Ask Assistant</span>';
+      }
+    }
+  </script>
+</body>
+</html>

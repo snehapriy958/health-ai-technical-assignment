@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Health Risk Predictor - Level 1</title>
   <style>
     :root {
@@ -132,14 +135,14 @@
     }
 
     .result-box.high-risk {
-      display: block;
+      display: block !important;
       background-color: var(--danger-bg);
       border-color: var(--danger-border);
       color: var(--danger-text);
     }
 
     .result-box.low-risk {
-      display: block;
+      display: block !important;
       background-color: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
@@ -236,6 +239,7 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      console.log('submit handler entered');
       errorBox.style.display = 'none';
       resultBox.className = 'result-box';
       resultBox.style.display = 'none';
@@ -249,6 +253,7 @@
         cholesterol: parseFloat(document.getElementById('cholesterol').value),
         max_hr: parseFloat(document.getElementById('max_hr').value)
       };
+      console.log('payload:', payload);
 
       try {
         const response = await fetch('/predict', {
@@ -256,8 +261,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+        console.log('response status:', response.status);
 
         const data = await response.json();
+        console.log('response JSON:', data);
 
         if (!response.ok) {
           let errDetail = 'Prediction failed';
@@ -280,7 +287,10 @@
         } else {
           resultBox.className = 'result-box low-risk';
         }
+        resultBox.style.display = 'block';
+        console.log('resultBox visibility:', window.getComputedStyle(resultBox).display);
       } catch (err) {
+        console.error('submit error:', err);
         errorBox.textContent = 'Error: ' + err.message;
         errorBox.style.display = 'block';
       } finally {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Level 1 serves a calibrated health risk classification model via a FastAPI `/predict` endpoint and provides a lightweight single-page HTML frontend that presents the predicted risk in plain language.
+Level 1 serves a health risk classification model returning predicted probabilities and risk tier classifications via a FastAPI `/predict` endpoint and provides a lightweight single-page HTML frontend that presents the predicted risk in plain language.
 
 **Personal Random Seed:** `S = 48`
 
@@ -61,10 +61,10 @@ We selected 5 core features:
 
 - **Pipeline:** `sklearn.pipeline.Pipeline`
   1. `StandardScaler()`: Standardizes features to zero mean and unit variance.
-  2. `LogisticRegression(random_state=48, max_iter=1000)`: Calibrated linear classification model.
+  2. `LogisticRegression(random_state=48, max_iter=1000)`: Linear classification model.
 - **Why Logistic Regression:**
   - Highly interpretable coefficients and odds ratios.
-  - Native `predict_proba()` produces well-calibrated posterior probabilities.
+  - Native `predict_proba()` produces continuous probability estimates and risk tier classifications.
   - Bundling the scaler and classifier in a single pipeline guarantees zero train/test data leakage and prevents inference-time scaling discrepancies.
 - **Reproducibility:** Seed `S = 48` is used for `train_test_split(..., random_state=48, stratify=y)` (80/20 train/test split) and inside `LogisticRegression(random_state=48)`.
 - **Artifact:** Saved to `model.joblib` via `joblib.dump()`. This artifact is excluded from version control via `.gitignore`.
