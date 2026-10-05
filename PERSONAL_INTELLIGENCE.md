@@ -41,7 +41,7 @@
 ## 3. AI Usage Disclosure & Weakness Encountered
 
 - **Disclosure**: AI coding assistant tooling was used for code scaffolding, repetitive test writing, HTML/CSS structuring, and documentation drafting.
-- **Concrete AI Weakness**: During Level 1 out-of-domain testing, the AI generated an initial test with a default similarity threshold of `0.05`, assuming non-health queries would score near zero. However, when evaluating the negative test query *"Who won the 1994 FIFA World Cup soccer championship?"*, the test unexpectedly failed because the query matched *"World Health Organization"* on the single token `"world"`, generating a cosine score of `0.1071`. The AI did not anticipate that corpus boilerplate creates non-zero background noise. I had to manually inspect the token analyzer, diagnose the overlap on `"world"`, and recalibrate the minimum threshold to `0.12` to cleanly separate legitimate clinical matches ($\ge 0.18$) from accidental single-token overlap.
+- **Concrete AI Weakness**: During Level 1 out-of-domain testing, the AI generated an initial test with a default similarity threshold of `0.05`, assuming non-health queries would score near zero. However, when evaluating the negative test query *"Who won the 1994 FIFA World Cup soccer championship?"*, the test unexpectedly failed because the query matched *"World Health Organization"* on the single token `"world"`, generating a cosine score of `0.1071`. The AI did not anticipate that corpus boilerplate creates non-zero background noise. I had to manually inspect the token analyzer, diagnose the overlap on `"world"`, and adjust the minimum threshold to `0.12` to cleanly separate legitimate clinical matches ($\ge 0.18$) from accidental single-token overlap.
 
 ---
 

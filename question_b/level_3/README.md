@@ -2,9 +2,24 @@
 
 ## Overview
 
-Level 3 documents intentional failure experiments, diagnoses, and hardening mechanisms for the health risk prediction application, provides an empirical concurrency evaluation, and presents a production architecture analysis for handling 100 concurrent users safely.
+Level 3 documents the two intentional failure experiments, diagnoses, and hardening mechanisms for the health risk prediction application, and separately provides an empirical 100-user concurrency evaluation and production safety architecture.
 
 **Personal Random Seed:** `S = 48`
+
+### Summary of Intentional Failures & Concurrency Evaluation
+- **Intentional Failure 1 — Missing Trained Model Artifact (`model.joblib`):**
+  - Temporarily moving or renaming `model.joblib`.
+  - `GET /health` reports `status = "degraded"` (`model_loaded: false`).
+  - `POST /predict` returns HTTP 503 Service Unavailable with descriptive diagnostic details rather than an unhandled 500 or process crash.
+  - Restoring the model artifact recovers normal prediction operation.
+- **Intentional Failure 2 — Wrong Input Type (`age = "fifty"`):**
+  - Submitting non-numeric string data to a numerical clinical feature.
+  - Direct unvalidated scikit-learn inference raises `ValueError: could not convert string to float: 'fifty'`.
+  - FastAPI / Pydantic schema validation intercepts the malformed payload before inference is attempted.
+  - The API returns HTTP 422 Unprocessable Entity and records the attempt into SQLite with `status = 'VALIDATION_ERROR'`.
+- **Separate Concurrency / Load Test (Not an Intentional Failure):**
+  - 100 simultaneous concurrent asynchronous requests evaluated via `question_b/level_3/load_test.py`.
+  - 100/100 HTTP 200 responses with 100 persisted SQLite records under Write-Ahead Logging (WAL) mode.
 
 ---
 

@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Health Risk Prediction API - Level 1",
-    description="Serves a calibrated Logistic Regression model (Seed: 48) on UCI Heart Disease features.",
+    description="Serves a Logistic Regression model (Seed: 48) on UCI Heart Disease features, returning predicted probabilities and risk tier classifications.",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -80,7 +80,7 @@ async def predict_endpoint(payload: PredictionInput):
     """
     Accepts validated clinical features and returns:
     - predicted risk category ("High" or "Low")
-    - calibrated model risk probability
+    - predicted probabilities and risk tier classifications
     - plain-language summary and disclaimer
     """
     pipeline = ml_models.get("pipeline")
