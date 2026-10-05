@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Risk Predictor - Level 1</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --danger-bg: #fee2e2;
+      --danger-text: #991b1b;
+      --danger-border: #f87171;
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --success-border: #4ade80;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 520px;
+      padding: 28px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: normal;
+      margin-left: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      background-color: #fafafa;
+      transition: border-color 0.15s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: #fff;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background-color 0.15s ease;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    button:disabled {
+      background-color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    .result-box {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      display: none;
+    }
+
+    .result-box.high-risk {
+      display: block;
+      background-color: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .result-box.low-risk {
+      display: block;
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .result-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .result-prob {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .result-disclaimer {
+      font-size: 0.8rem;
+      opacity: 0.9;
+      font-style: italic;
+      border-top: 1px solid currentColor;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .error-box {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: var(--radius);
+      background-color: #fef2f2;
+      border: 1px solid #f87171;
+      color: #991b1b;
+      font-size: 0.875rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Health Risk Predictor</h1>
+    <p class="subtitle">Question B — Level 1: Demonstration Model (Seed: 48)</p>
+
+    <form id="predict-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="age">Age <span class="hint">(1 - 120 yrs)</span></label>
+          <input type="number" id="age" name="age" min="1" max="120" value="55" required>
+        </div>
+        <div class="form-group">
+          <label for="sex">Biological Sex</label>
+          <select id="sex" name="sex" required>
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="resting_bp">Resting Blood Pressure <span class="hint">(50 - 250 mm Hg)</span></label>
+        <input type="number" id="resting_bp" name="resting_bp" min="50" max="250" step="0.1" value="130" required>
+      </div>
+
+      <div class="form-group">
+        <label for="cholesterol">Serum Cholesterol <span class="hint">(80 - 600 mg/dL)</span></label>
+        <input type="number" id="cholesterol" name="cholesterol" min="80" max="600" step="0.1" value="230" required>
+      </div>
+
+      <div class="form-group">
+        <label for="max_hr">Maximum Heart Rate <span class="hint">(50 - 250 bpm)</span></label>
+        <input type="number" id="max_hr" name="max_hr" min="50" max="250" step="0.1" value="145" required>
+      </div>
+
+      <button type="submit" id="submit-btn">Assess Risk</button>
+    </form>
+
+    <div id="error-box" class="error-box"></div>
+
+    <div id="result-box" class="result-box">
+      <div id="result-title" class="result-title"></div>
+      <div id="result-prob" class="result-prob"></div>
+      <div id="result-disclaimer" class="result-disclaimer"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('predict-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const resultBox = document.getElementById('result-box');
+    const resultTitle = document.getElementById('result-title');
+    const resultProb = document.getElementById('result-prob');
+    const resultDisclaimer = document.getElementById('result-disclaimer');
+    const errorBox = document.getElementById('error-box');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+      resultBox.className = 'result-box';
+      resultBox.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Evaluating...';
+
+      const payload = {
+        age: parseInt(document.getElementById('age').value, 10),
+        sex: parseInt(document.getElementById('sex').value, 10),
+        resting_bp: parseFloat(document.getElementById('resting_bp').value),
+        cholesterol: parseFloat(document.getElementById('cholesterol').value),
+        max_hr: parseFloat(document.getElementById('max_hr').value)
+      };
+
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          let errDetail = 'Prediction failed';
+          if (data.detail) {
+            if (Array.isArray(data.detail)) {
+              errDetail = data.detail.map(d => `${d.loc.slice(-1)[0]}: ${d.msg}`).join(', ');
+            } else {
+              errDetail = data.detail;
+            }
+          }
+          throw new Error(errDetail);
+        }
+
+        resultTitle.textContent = data.summary; // e.g., "Predicted risk: High"
+        resultProb.textContent = data.estimated_probability; // e.g., "Estimated model probability: 74.0%"
+        resultDisclaimer.textContent = data.disclaimer; // "This is a model prediction, not a medical diagnosis."
+
+        if (data.prediction === 1) {
+          resultBox.className = 'result-box high-risk';
+        } else {
+          resultBox.className = 'result-box low-risk';
+        }
+      } catch (err) {
+        errorBox.textContent = 'Error: ' + err.message;
+        errorBox.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Assess Risk';
+      }
+    });
+  </script>
+</body>
+</html>
