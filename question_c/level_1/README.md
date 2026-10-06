@@ -45,7 +45,7 @@ This implementation represents **Level 1** of Question C, providing a simple, in
 1. **Document Corpus Loader (`chunker.py`)**:
    - Parses the 5 WHO text documents in `question_c/documents/`.
    - Extracts structured metadata headers (`SOURCE_ID`, `TITLE`, `ORGANIZATION`, `SOURCE_URL`, `TOPIC`).
-   - Splits documents along section headers (`##`, `###`) into 70 self-contained passages while keeping metadata attached to every chunk.
+   - Splits documents along section headers (`##`, `###`) into 71 self-contained passages while keeping metadata attached to every chunk.
 2. **Library Retriever (`retriever.py`)**:
    - Uses `sklearn.feature_extraction.text.TfidfVectorizer` with english stop words, sublinear term-frequency scaling, and bi-grams.
    - Computes cosine similarity between user query and chunk vectors.
@@ -68,11 +68,11 @@ The corpus consists exclusively of the 5 official WHO fact sheets collected in `
 | Source ID | Topic | Official Title | Source URL | Chunks |
 |---|---|---|---|---|
 | `who_diabetes` | Diabetes | Diabetes | [WHO Diabetes Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/diabetes) | 13 |
-| `who_hypertension` | Hypertension | Hypertension | [WHO Hypertension Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/hypertension) | 10 |
+| `who_hypertension` | Hypertension | Hypertension | [WHO Hypertension Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/hypertension) | 11 |
 | `who_physical_activity` | Physical Activity | Physical activity | [WHO Physical Activity Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/physical-activity) | 11 |
 | `who_healthy_diet` | Healthy Diet | Healthy diet | [WHO Healthy Diet Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/healthy-diet) | 16 |
 | `who_obesity` | Obesity and Overweight | Obesity and overweight | [WHO Obesity Fact Sheet](https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight) | 20 |
-| **Total** | — | — | — | **70** |
+| **Total** | — | — | — | **71** |
 
 All text is factual public health guidance (symptoms, diagnostic cutoffs, prevention strategies, dietary recommendations). No personal health data is present.
 
@@ -120,7 +120,7 @@ The application supports standard cloud LLMs via environment variables without h
 ## 5. Why This Approach Was Chosen
 
 1. **Clarity & Interview Defensibility**: Every component (parsing, TF-IDF matrices, cosine angles, context prompt, HTTP API) is straightforward and easy to explain end-to-end without black-box dependencies.
-2. **Zero Vector Database Overhead**: Avoids heavy external services (e.g. Chroma, Pinecone, FAISS) for a compact 70-chunk corpus where sparse retrieval runs in milliseconds.
+2. **Zero Vector Database Overhead**: Avoids heavy external services (e.g. Chroma, Pinecone, FAISS) for a compact 71-chunk corpus where sparse retrieval runs in milliseconds.
 3. **Strict Medical Grounding**: The prompt forces the LLM to admit when the WHO sources do not provide sufficient information, eliminating clinical hallucinations.
 
 ---
