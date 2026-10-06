@@ -28,9 +28,12 @@ For all 3 unanswerable questions, the expected behavior is **explicit refusal**:
 
 ---
 
-## 3. Predictions (Recorded Before Running Evaluation)
+## 3. Predictions (Evaluation Cycle & Provenance)
 
-Formally recorded in [`predictions.md`](file:///c:/Developers/Sneha/health-ai-technical-assignment/question_c/level_3/predictions.md) before executing the pipeline:
+> [!NOTE]
+> In commit `955429a`, the initial predictions and results were committed simultaneously, meaning Git history did not prove prior commitment. A new prediction template has been prepared in [`predictions.md`](file:///c:/Developers/Sneha/health-ai-technical-assignment/question_c/level_3/predictions.md) to be committed and pushed to GitHub *prior* to executing the evaluation runner.
+
+The baseline evaluation hypotheses recorded during initial system benchmarking were:
 
 | ID | Question | Predicted Retrieval | Predicted Correctness | Predicted Failure Type |
 |---|---|:---:|:---:|---|
