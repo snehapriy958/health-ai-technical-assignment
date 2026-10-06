@@ -2,6 +2,7 @@
 
 **Project**: Health AI Technical Assignment (Questions B & C)
 **Author**: Sneha Singh
+**Personal Seed (S)**: 48
 **Date**: October 2026
 
 ---
@@ -66,3 +67,15 @@ I can explain the following technical concepts from first principles without ass
 - **Cosine Similarity**: Inner product divided by Euclidean norms $\frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|_2 \|\mathbf{v}\|_2}$, including the necessity of checking $\|\mathbf{u}\| = 0$ or $\|\mathbf{v}\| = 0$ to avoid division by zero.
 - **Retrieval vs. Generation Failures**: How inspecting the prompt context separates upstream search misses (ground truth absent from context) from downstream LLM hallucination (ground truth present but ignored or contradicted).
 - **The Q04 Failure**: Exactly why lexical synonym mismatch (*"early warning signs"* vs. *"symptoms"*) causes sparse retrieval to degrade, motivating dense semantic embeddings for production systems.
+
+---
+
+## 6. Pre-Test Chronology Disclosure
+
+The repository initially contained an earlier prototype Level 3 prediction/results commit (`955429a`) in which the historical Git history did not provide sufficient chronological proof that predictions had been committed before that evaluation. I did not rewrite or backdate that history.
+
+Instead, I created a new final prediction-before-test evaluation cycle for the submission:
+- For **Question B**, the final Level 3 predictions were frozen and committed in `f6ec003` before the final experiments, and the experiment results were committed separately in `626ff92`.
+- For **Question C**, the final Level 3 predictions were frozen and committed in `c9b7f0f` before the final evaluation, and the evaluation results were committed separately in `458e89d`.
+
+These final commits provide the verifiable prediction $\rightarrow$ test/evaluation $\rightarrow$ results chronology required by the assignment.
