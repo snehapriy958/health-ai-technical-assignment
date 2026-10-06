@@ -27,14 +27,12 @@
 1. **Level 2 Empirical Alignment**:
    - The custom NumPy retriever achieved **100% Top-1 exact chunk match on Q2 and Q3**, and selected the same document on Q1.
    - Cosine score magnitudes differed (custom $\sim 0.40\text{--}0.52$ vs. library $\sim 0.20\text{--}0.35$) because the library retriever incorporated bi-grams, expanding the feature space ($|V| \approx 3{,}700$ vs. $1{,}544$) and diluting vector energy. This confirmed that cosine similarity is strictly relative within a single representation space.
-2. **70% Level 3 Prediction Accuracy**:
-   - 7 of 10 pre-registered predictions matched empirical results.
-   - 3/3 unanswerable questions (mRNA vaccines, Olympic games, malaria) were correctly refused (`0.0000` similarity score, zero hallucinations).
-3. **The Q04 Failure Case (Lexical Gap)**:
-   - Query: *"What early warning signs might indicate someone is developing diabetes?"*
-   - Target passage: `who_diabetes_c003` (Symptoms: excessive thirst, urination, blurred vision).
-   - Actual retrieval: `who_diabetes_c005` (Type 2 diabetes: *"early diagnosis is important to prevent..."*).
-   - **Root Cause Analysis**: The ground-truth symptom passage ranked **#11** with a score of $0.0583$ because the lay term *"early warning signs"* had zero overlap with the heading *"Symptoms"*. Meanwhile, the word *"early"* matched *"early diagnosis"* in chunk `c005` (score $0.1786$). Because `who_diabetes_c003` was completely excluded from the top-3 context, the LLM could not possibly state the symptoms. **This proved a pure Retrieval Failure caused by sparse vocabulary mismatch.**
+2. **Level 3 Empirical Performance & Failure Taxonomy**:
+   - **Prediction Accuracy: 9 / 10 (90.0%)**: 9 of 10 pre-test predictions matched empirical outcomes. (Q02 was predicted correct, but mock extraction missed the exact 140/90 values).
+   - **QA Correctness: 8 / 10 (80.0%)**: 8 of 10 questions answered correctly (5 correct answers) or refused correctly (3 clean out-of-domain refusals).
+   - **Zero Hallucinations**: 3/3 out-of-domain questions (mRNA vaccines, Olympic games, malaria) were cleanly refused (`0.0000` similarity score, zero hallucinations).
+   - **Retrieval Failure (Q04)**: Lay terminology *"early warning signs"* had zero overlap with document heading *"Symptoms"*. Target chunk `who_diabetes_c003` ranked #11 (score $0.0583$), demonstrating a pure sparse retrieval lexical gap.
+   - **Generation Failure (Q02)**: The ground-truth diagnostic chunk `who_hypertension_c001` was successfully retrieved in the top-3 at rank #2 (score $0.2805$), but extractive synthesis chose `who_hypertension_c006` prevention sentences, omitting the quantitative 140/90 thresholds.
 
 ---
 
